@@ -374,7 +374,7 @@ class Network(object):
     self._predictions["cls_pred"] = cls_pred
     self._predictions["cls_prob"] = cls_prob
     self._predictions["bbox_pred"] = bbox_pred
-
+    self._predictions["fc7"] = fc7
     return cls_prob, bbox_pred
 
   def _image_to_head(self, is_training, reuse=None):
@@ -471,12 +471,13 @@ class Network(object):
     feed_dict = {self._image: image,
                  self._im_info: im_info}
 
-    cls_score, cls_prob, bbox_pred, rois = sess.run([self._predictions["cls_score"],
+    cls_score, cls_prob, bbox_pred, rois, fc7 = sess.run([self._predictions["cls_score"],
                                                      self._predictions['cls_prob'],
                                                      self._predictions['bbox_pred'],
-                                                     self._predictions['rois']],
-                                                    feed_dict=feed_dict)
-    return cls_score, cls_prob, bbox_pred, rois
+                                                     self._predictions['rois'],
+                                                     self._predictions['fc7']],
+                                                     feed_dict=feed_dict)
+    return cls_score, cls_prob, bbox_pred, rois, fc7
 
   def get_summary(self, sess, blobs):
     feed_dict = {self._image: blobs['data'], self._im_info: blobs['im_info'],

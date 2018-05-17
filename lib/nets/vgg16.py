@@ -78,6 +78,17 @@ class vgg16(Network):
 
     return variables_to_restore
 
+
+  def get_variables_to_restore_finetune(self, variables, var_keep_dic):
+    variables_to_restore = []
+
+    for v in variables:
+      if v.name.split(':')[0] in var_keep_dic:
+        print('Variables restored: %s' % v.name)
+        variables_to_restore.append(v)
+
+    return variables_to_restore
+
   def fix_variables(self, sess, pretrained_model):
     print('Fix VGG16 layers..')
     with tf.variable_scope('Fix_VGG16') as scope:

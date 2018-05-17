@@ -12,9 +12,12 @@ from __future__ import print_function
 
 __sets = {}
 from datasets.pascal_voc import pascal_voc
-from datasets.coco import coco
+#from datasets.coco import coco
+from datasets.flickr30k import flickr30k
+from datasets.referit import referit
 
 import numpy as np
+import os
 
 # Set up voc_<year>_<split> 
 for year in ['2007', '2012']:
@@ -22,27 +25,35 @@ for year in ['2007', '2012']:
     name = 'voc_{}_{}'.format(year, split)
     __sets[name] = (lambda split=split, year=year: pascal_voc(split, year))
 
-for year in ['2007', '2012']:
-  for split in ['train', 'val', 'trainval', 'test']:
-    name = 'voc_{}_{}_diff'.format(year, split)
-    __sets[name] = (lambda split=split, year=year: pascal_voc(split, year, use_diff=True))
-
 # Set up coco_2014_<split>
-for year in ['2014']:
-  for split in ['train', 'val', 'minival', 'valminusminival', 'trainval']:
-    name = 'coco_{}_{}'.format(year, split)
-    __sets[name] = (lambda split=split, year=year: coco(split, year))
+#for year in ['2014']:
+#  for split in ['train', 'val', 'minival', 'valminusminival', 'trainval']:
+#    name = 'coco_{}_{}'.format(year, split)
+#    __sets[name] = (lambda split=split, year=year: coco(split, year))
 
 # Set up coco_2015_<split>
-for year in ['2015']:
-  for split in ['test', 'test-dev']:
-    name = 'coco_{}_{}'.format(year, split)
-    __sets[name] = (lambda split=split, year=year: coco(split, year))
+##for year in ['2015']:
+#  for split in ['test', 'test-dev']:
+#    name = 'coco_{}_{}'.format(year, split)
+#    __sets[name] = (lambda split=split, year=year: coco(split, year))
+
+for split in ['train', 'train_val', 'test']:
+    name = 'flickr30k_{}'.format(split)
+    print(name)
+    print(os.getcwd())
+    __sets[name] = (lambda split=split: flickr30k(split, 'data'))
+
+
+for split in ['train_val', 'test']:
+    name = 'referit_{}'.format(split)
+    print(name)
+    __sets[name] = (lambda split=split: referit(split, 'data'))
 
 
 def get_imdb(name):
   """Get an imdb (image database) by name."""
   if name not in __sets:
+    print(__sets.keys())
     raise KeyError('Unknown dataset: {}'.format(name))
   return __sets[name]()
 
